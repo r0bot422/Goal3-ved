@@ -13,10 +13,19 @@ jobs:
        - name: Checkout Repository
          uses: actions/checkout@v3
 
-#step for team leader
+#step 2 for team leader
        - name: Team Leader Update 
          if: github.actor == 'r0bot422'
          run:
           sed -i '/<\/body>/i <p>Updated by Team Leader on ' "$(date)"'</p>' index.html
-         
+
+#step 3 for team leader 
+       - name: Team Leader Update 
+         if: github.actor == 'r0bot422'
+         run:
+          sed -i '/<\/body>/i <p>Updated by Team Leader on ' "$(date)"'</p>' index.html
+       - name: Update readme    
+         run: | 
+          echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
+        
        
