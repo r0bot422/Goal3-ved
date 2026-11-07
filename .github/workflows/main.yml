@@ -1,0 +1,42 @@
+name: Collaborative Workflow
+
+on:
+   push:
+      branches:
+         -main
+
+jobs:
+   update_html_and_readme:
+     runs-on: ubuntu-latest
+     steps:
+       # Step 1: Checkout the Repository
+       - name: Checkout Repository
+         uses: actions/checkout@v3
+
+#step 2 for team leader
+       - name: Team Leader Update 
+         if: github.actor == 'r0bot422'
+         run:
+          sed -i '/<\/body>/i <p>Updated by Team Leader on ' "$(date)"'</p>' index.html
+
+#step 3 for team leader 
+       - name: Team Leader Update 
+         if: github.actor == 'r0bot422'
+         run:
+          sed -i '/<\/body>/i <p>Updated by Team Leader on ' "$(date)"'</p>' index.html
+       - name: Update readme    
+         run: | 
+          echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
+
+# step 4 Commit Changes to index.html and README
+       - name: Commit and Push Changes
+         run: |
+          git config --global user.name "github-actions[bot]" 
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Workflow: Updated HTML and README for ${{ github.actor }}" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push origin main
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       
